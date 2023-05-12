@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './theme';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 /* const darkTheme = {
   textColor: "whitesmoke",
@@ -27,11 +26,16 @@ const lightTheme = {
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const queryClient = new QueryClient()  //react-query 사용
+
+
+
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-    <App />
-    </ThemeProvider>
+    <QueryClientProvider client = {queryClient}>   {/* //react-query 사용 */}   
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

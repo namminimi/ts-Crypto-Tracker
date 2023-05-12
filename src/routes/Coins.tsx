@@ -1,6 +1,9 @@
+import { useQuery } from 'react-query';
 import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { fetchCoins } from './api';
+import { Helmet } from 'react-helmet-async';
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -18,7 +21,7 @@ align-items: center;
 const CoinsList = styled.ul``
 
 const Coin = styled.li`
-    background-color: white;
+    background-color: ${props => props.theme.textColor};;
     color: ${props => props.theme.bgColor};
     
     border-radius: 15px;
@@ -51,7 +54,7 @@ const Img = styled.img`
     margin-right: 10px;
 `
 
-interface CoinInterface {
+interface ICoin {
     id: string,
     name: string,
     symbol: string,
@@ -62,7 +65,9 @@ interface CoinInterface {
 }
 
 const Coins = () => {
-    const [coins, setCoins] = useState<CoinInterface[]>([])
+    const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins) //return으로 받은 json을 data로
+    //뒤로가기 눌렀을때 로딩 안걸리는 이유는 캐쉬에 저장되있기때문(데이터 유지)
+    /* const [coins, setCoins] = useState<CoinInterface[]>([]) //react-query를 사용하므로 생략
     const [loading, setLoading] = useState(true);
     useEffect(()=>{
         (async() => {
@@ -72,14 +77,17 @@ const Coins = () => {
             setLoading(false)
         })();
     },[])
-    console.log(coins)
+    console.log(coins) */
     return (
         <Container>
+            <Helmet>
+                <title>코인</title>
+            </Helmet>
             <Header>
                 <Title>코인</Title>
             </Header>
-            {loading ? <Loader>Loading...</Loader> : <CoinsList>
-                {coins.map(coin => <Coin key={coin.id}>
+            {isLoading ? <Loader>Loading...</Loader> : <CoinsList>
+                {data?.slice(0,20).map(coin => <Coin key={coin.id}>
                     <Link to={`/${coin.id}`} state= {{name: coin.name}}>
                         <Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} alt="" />
                         {coin.name} &rarr;

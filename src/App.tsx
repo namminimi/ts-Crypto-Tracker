@@ -1,7 +1,10 @@
 import './App.css';
-import { createGlobalStyle, styled } from 'styled-components';
-import React, { useState } from 'react';
+import { ThemeProvider, createGlobalStyle, styled } from 'styled-components';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import Router from './Router';
+import {ReactQueryDevtools} from 'react-query/devtools'
+import { HelmetProvider } from 'react-helmet-async';
+import { darkTheme, lightTheme, theme } from './theme';
 
 //전역에 스타일 적용 (스타일 리셋)
 const GlobalStyle = createGlobalStyle`
@@ -53,22 +56,53 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
+    font-weight: 300;
     font-family: 'Source Sans Pro', sans-serif;
     background-color: ${(props) => props.theme.bgColor};
-    color: ${(props) => props.theme.textColor}
+    color:${(props) => props.theme.textColor};
+    line-height: 1.2;
   }
   a {
     text-decoration: none;
     color: inherit;
   }
 `
+const BackGroundButton = styled.button`
+  width: 60px;
+  height: 60px;
+  position: fixed;
+  bottom: 30px;
+  right: 80px;
+  border-radius: 50%;
+  border: 0;
+  outline: 0;
+  font-size: 20px;
+  background-color: ${(props) => props.theme.textColor};
+  color:${(props) => props.theme.bgColor};
+`
 
 function App() {
+  const [isLight, setLight] = useState(true)
+  const [isDark, setDark] = useState(false)
+  const onClick = () => {
+    if(isLight) {
+      setDark(true)
+      setLight(false)
+    } else {
+      setDark(false)
+      setLight(true)
+    }
+  }
+
   return (
-    <>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme} >
       <GlobalStyle/>
-      <Router/>
-    </>
+      <HelmetProvider>
+        <Router isDark={isDark}/>
+        <BackGroundButton onClick={onClick}>{isDark ? "light" : "dark"}</BackGroundButton>
+      </HelmetProvider>
+      <ReactQueryDevtools initialIsOpen={true}/>
+    </ThemeProvider>
   );
 }
 
