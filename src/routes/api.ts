@@ -1,6 +1,6 @@
 //react-query를 사용하기위해 만듬
 
-const BASE_URL = `https://cors-anywhere.herokuapp.com/https://api.coinpaprika.com/v1`
+const BASE_URL = `https://api.coinpaprika.com/v1`
 
 /* https://cors-anywhere.herokuapp.com/ */ //cors에러 방지
 
